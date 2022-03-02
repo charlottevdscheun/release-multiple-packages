@@ -1,0 +1,49 @@
+name: Autoloader Release
+
+on:
+  # pull_request:
+  push:
+    branches: [main]
+    paths:
+       - 'autoloader/**'
+
+jobs:
+  releaseAutoloader:
+    name: Build autoloader [main]
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./autoloader
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: 'refs/heads/main'
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Build autoloader
+        run: |
+          pip install wheel
+          mkdir dist/
+          python setup.py bdist_wheel -p any -d dist/ --python-tag py3
+        env:
+          VERSION: ${{ github.run_id }}
+        working-directory: ${{env.working-directory}}
+
+
+      - name: Upload package
+        uses: actions/upload-artifact@v2
+        with:
+          name: autoloader-build
+          path: dist/
+
+      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        with:
+          repo_token: "${{ secrets.RELEASE_TOKEN }}"
+          automatic_release_tag: "0.2.${{ github.run_id }}-latest"
+          prerelease: false
+          title: "Autoloader"
+          files: |
+            ./dist/autoloader-*.whl

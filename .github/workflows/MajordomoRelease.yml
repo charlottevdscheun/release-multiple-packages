@@ -1,0 +1,49 @@
+name: Majordomo Release
+
+on:
+  # pull_request:
+  push:
+    branches: [main]
+    paths:
+       - 'majordomo/**'
+
+jobs:
+  releaseMajordomo:
+    name: Build majordomo [main]
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./majordomo
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: 'refs/heads/main'
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Build majordomo
+        run: |
+          pip install wheel
+          mkdir dist/
+          python setup.py bdist_wheel -p any -d dist/ --python-tag py3
+        env:
+          VERSION: ${{ github.run_id }}
+        working-directory: ${{env.working-directory}}
+
+
+      - name: Upload package
+        uses: actions/upload-artifact@v2
+        with:
+          name: majordomo-build
+          path: dist/
+
+      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+        with:
+          repo_token: "${{ secrets.RELEASE_TOKEN }}"
+          automatic_release_tag: "0.2.${{ github.run_id }}-latest"
+          prerelease: false
+          title: "Majordomo"
+          files: |
+            ./dist/majordomo-*.whl
