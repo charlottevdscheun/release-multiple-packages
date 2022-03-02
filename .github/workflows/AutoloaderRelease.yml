@@ -1,18 +1,13 @@
-name: Autoloader Release
+name: Release
 
 on:
-  # pull_request:
   push:
     branches: [main]
-    paths:
-       - 'autoloader/**'
 
 jobs:
-  releaseAutoloader:
-    name: Build autoloader [main]
+  release:
+    name: Build pacakages [main]
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./autoloader
     steps:
       - uses: actions/checkout@v2
         with:
@@ -23,28 +18,42 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Build autoloader
+      - name: Build packages
         run: |
           pip install wheel
           mkdir dist/
-          python setup.py bdist_wheel -p any -d dist/ --python-tag py3
+          python ./autoloader/setup.py bdist_wheel -p any -d dist/ --python-tag py3
+          python ./majordomo/setup.py bdist_wheel -p any -d dist/ --python-tag py3
+          python ./pedant/setup.py bdist_wheel -p any -d dist/ --python-tag py3
         env:
           VERSION: ${{ github.run_id }}
-        working-directory: ${{env.working-directory}}
 
 
-      - name: Upload package
+      - name: Upload autoloader
         uses: actions/upload-artifact@v2
         with:
           name: autoloader-build
-          path: ${{env.working-directory}}/dist/
-        
+          path: ./dist/
+      
+      - name: Upload majordomo
+        uses: actions/upload-artifact@v2
+        with:
+          name: majordomo-build
+          path: ./dist/
+      
+      - name: Upload pedant
+        uses: actions/upload-artifact@v2
+        with:
+          name: pedant-build
+          path: ./dist/
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
           repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "0.2.${{ github.run_id }}-latest"
+          automatic_release_tag: "0.2.${{ github.run_id }}"
           prerelease: false
-          title: "Autoloader"
+          title: "Thor Packages 0.2.${{ github.run_id }}"
           files: |
-            ${{env.working-directory}}/dist/autoloader-*.whl
+            ./dist/autoloader-*.whl
+            ./dist/majordomo-*.whl
+            ./dist/pedant-*.whl

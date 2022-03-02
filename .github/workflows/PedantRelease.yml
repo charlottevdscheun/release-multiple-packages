@@ -1,49 +1,49 @@
-name: pedant Release
+# name: pedant Release
 
-on:
-  # pull_request:
-  push:
-    branches: [main]
-    paths:
-       - 'pedant/**'
+# on:
+#   # pull_request:
+#   push:
+#     branches: [main]
+#     paths:
+#        - 'pedant/**'
 
-jobs:
-  releasepedant:
-    name: Build pedant [main]
-    runs-on: ubuntu-latest
-    env:
-      working-directory: ./pedant
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: 'refs/heads/main'
+# jobs:
+#   releasepedant:
+#     name: Build pedant [main]
+#     runs-on: ubuntu-latest
+#     env:
+#       working-directory: ./pedant
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           ref: 'refs/heads/main'
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.8
+#       - name: Set up Python
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: 3.8
 
-      - name: Build pedant
-        run: |
-          pip install wheel
-          mkdir dist/
-          python setup.py bdist_wheel -p any -d dist/ --python-tag py3
-        env:
-          VERSION: ${{ github.run_id }}
-        working-directory: ${{env.working-directory}}
+#       - name: Build pedant
+#         run: |
+#           pip install wheel
+#           mkdir dist/
+#           python setup.py bdist_wheel -p any -d dist/ --python-tag py3
+#         env:
+#           VERSION: ${{ github.run_id }}
+#         working-directory: ${{env.working-directory}}
 
 
-      - name: Upload package
-        uses: actions/upload-artifact@v2
-        with:
-          name: pedant-build
-          path: ${{env.working-directory}}/dist/
+#       - name: Upload package
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: pedant-build
+#           path: ${{env.working-directory}}/dist/
 
-      - uses: "marvinpinto/action-automatic-releases@v1.2.1"
-        with:
-          repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "0.2.${{ github.run_id }}-latest"
-          prerelease: false
-          title: "pedant"
-          files: |
-            ${{env.working-directory}}/dist/pedant-*.whl
+#       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
+#         with:
+#           repo_token: "${{ secrets.RELEASE_TOKEN }}"
+#           automatic_release_tag: "0.2.${{ github.run_id }}-latest"
+#           prerelease: false
+#           title: "pedant"
+#           files: |
+#             ${{env.working-directory}}/dist/pedant-*.whl
