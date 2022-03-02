@@ -22,27 +22,27 @@ jobs:
         run: |
           pip install wheel
           mkdir dist/
-          python ./autoloader/setup.py bdist_wheel -p any -d dist/ --python-tag py3
-          python ./majordomo/setup.py bdist_wheel -p any -d dist/ --python-tag py3
-          python ./pedant/setup.py bdist_wheel -p any -d dist/ --python-tag py3
+          python ./autoloader/setup.py bdist_wheel -d dist/
+          python ./majordomo/setup.py bdist_wheel -d dist/
+          python ./pedant/setup.py bdist_wheel -d dist/
 
 
       - name: Upload autoloader
         uses: actions/upload-artifact@v2
         with:
-          name: autoloader-build
+          name: autoloader
           path: ./dist/
       
       - name: Upload majordomo
         uses: actions/upload-artifact@v2
         with:
-          name: majordomo-build
+          name: majordomo
           path: ./dist/
       
       - name: Upload pedant
         uses: actions/upload-artifact@v2
         with:
-          name: pedant-build
+          name: pedant
           path: ./dist/
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
