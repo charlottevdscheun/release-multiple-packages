@@ -37,7 +37,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: autoloader-build
-          path: dist/
+          path: ${{env.working-directory}}/dist/
+        
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
@@ -46,4 +47,4 @@ jobs:
           prerelease: false
           title: "Autoloader"
           files: |
-            ./dist/autoloader-*.whl
+            ${{env.working-directory}}/dist/autoloader-*.whl

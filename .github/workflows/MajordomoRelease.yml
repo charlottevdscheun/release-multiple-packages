@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: majordomo-build
-          path: dist/
+          path: ${{env.working-directory}}/dist/
 
       - uses: "marvinpinto/action-automatic-releases@v1.2.1"
         with:
@@ -46,4 +46,4 @@ jobs:
           prerelease: false
           title: "Majordomo"
           files: |
-            ./dist/majordomo-*.whl
+            ${{env.working-directory}}/dist/majordomo-*.whl
