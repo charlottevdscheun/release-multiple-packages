@@ -2,7 +2,7 @@ import os
 
 from setuptools import find_packages, setup
 
-BUILD_ID = os.environ.get("VERSION") or 0
+# BUILD_ID = os.environ.get("VERSION") or 0
 
 
 requirements = [
@@ -23,7 +23,7 @@ setup_requirements = [
 setup(
     name="pedant",
     author="Thor Fundament",
-    version=f"0.2.{BUILD_ID}",
+    # version=f"",
     description="Validation",
     packages=find_packages(),
     install_requires=requirements,
